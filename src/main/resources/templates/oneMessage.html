@@ -19,24 +19,14 @@
 </nav>
 
 <div class="container">
-    <h1>Üzenet lista</h1>
-    <table class="table">
-        <thead>
-        <tr>
-            <td>Szerző</td>
-            <td>Szöveg</td>
-            <td>Dátum</td>
-            <td></td>
-        </tr>
-        </thead>
-        <tr data-th-each="msg: ${msgList}">
-            <td data-th-text="${msg.author}"></td>
-            <td data-th-text="${msg.text}"></td>
-            <td data-th-text="${msg.creationDate}"></td>
-            <td><a data-th-href="@{/message/{id}(id=${msg.id})}">Részletek</a></td>
-        </tr>
-    </table>
-
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title" data-th-text="${message.author}">Card title</h4>
+            <p class="card-text" data-th-text="${message.text}">Some example text. Some example text.</p>
+            <p class="card-text" data-th-text="${message.creationDate}"></p>
+            <p class="card-text" data-th-text="${message.id}"></p>
+        </div>
+    </div>
 </div>
 </body>
 </html>

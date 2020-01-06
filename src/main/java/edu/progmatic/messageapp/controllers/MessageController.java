@@ -3,13 +3,13 @@ package edu.progmatic.messageapp.controllers;
 import edu.progmatic.messageapp.modell.Message;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,7 @@ public class MessageController {
         messages.add(new Message("Aladár", "Adj pénzt!", LocalDateTime.now()));
     }
 
-    @GetMapping("/messages")
+    @RequestMapping(value = "/messages", method = RequestMethod.GET)
     public String showMessages(
             @RequestParam(name = "limit", defaultValue = "100", required = false) Integer limit,
             @RequestParam(name = "orderby", defaultValue = "", required = false) String orderBy,
@@ -56,5 +56,16 @@ public class MessageController {
                 .limit(limit).collect(Collectors.toList());
         model.addAttribute("msgList", msgs);
         return "messageList";
+    }
+
+    @GetMapping("/message/{id}")
+    public String showOneMessage(
+            @PathVariable("id") Long msgId,
+            Model model){
+        Optional<Message> message = messages.stream().filter(m -> m.getId().equals(msgId)).findFirst();
+        if(message.isPresent()){
+            model.addAttribute("message", message.get());
+        }
+        return "oneMessage";
     }
 }

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 public class Message {
 
+    private static Long maxId = 0L;
+
     private Long id;
     private String author;
     private String text;
@@ -13,6 +15,7 @@ public class Message {
     }
 
     public Message(String author, String text, LocalDateTime creationDate) {
+        this.id = maxId++;
         this.author = author;
         this.text = text;
         this.creationDate = creationDate;
