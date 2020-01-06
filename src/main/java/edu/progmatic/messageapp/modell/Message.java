@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class Message {
 
+    private Long id;
     private String author;
     private String text;
     private LocalDateTime creationDate;
@@ -15,6 +16,14 @@ public class Message {
         this.author = author;
         this.text = text;
         this.creationDate = creationDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getAuthor() {

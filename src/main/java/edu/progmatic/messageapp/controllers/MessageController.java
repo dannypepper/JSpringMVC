@@ -4,10 +4,14 @@ import edu.progmatic.messageapp.modell.Message;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Controller
 public class MessageController {
@@ -24,8 +28,33 @@ public class MessageController {
     }
 
     @GetMapping("/messages")
-    public String showMessages(Model model){
-        model.addAttribute("msgList", messages);
+    public String showMessages(
+            @RequestParam(name = "limit", defaultValue = "100", required = false) Integer limit,
+            @RequestParam(name = "orderby", defaultValue = "", required = false) String orderBy,
+            @RequestParam(name = "order", defaultValue = "asc", required = false) String order,
+            Model model){
+        Comparator<Message> msgComp = Comparator.comparing((Message::getCreationDate));
+        switch (orderBy){
+            case "text":
+                msgComp = Comparator.comparing((Message::getText));
+                break;
+            case "id":
+                msgComp = Comparator.comparing((Message::getId));
+                break;
+            case "author":
+                msgComp = Comparator.comparing((Message::getAuthor));
+                break;
+            default:
+                break;
+        }
+        if(order.equals("desc")){
+            msgComp = msgComp.reversed();
+        }
+
+        List<Message> msgs = messages.stream()
+                .sorted(msgComp)
+                .limit(limit).collect(Collectors.toList());
+        model.addAttribute("msgList", msgs);
         return "messageList";
     }
 }
