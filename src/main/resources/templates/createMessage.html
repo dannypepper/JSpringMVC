@@ -1,0 +1,27 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <form data-th-action="@{/createmessage}" method="POST">
+        <div class="form-group">
+            <label for="kuldo">Küldő</label>
+            <input name="author" type="text" class="form-control" id="kuldo" placeholder="Küldő">
+        </div>
+        <div class="form-group">
+            <label for="szoveg">Üzenet szövege</label>
+            <input name="text" type="text" class="form-control" id="szoveg" placeholder="Üzenet">
+        </div>
+        <button type="submit" class="btn btn-primary">Beküld</button>
+    </form>
+</div>
+</body>
+</html>

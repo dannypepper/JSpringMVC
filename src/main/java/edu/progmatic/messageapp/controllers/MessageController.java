@@ -29,6 +29,7 @@ public class MessageController {
 
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
     public String showMessages(
+            @RequestParam(name = "id", required = false) Long id,
             @RequestParam(name = "limit", defaultValue = "100", required = false) Integer limit,
             @RequestParam(name = "orderby", defaultValue = "", required = false) String orderBy,
             @RequestParam(name = "order", defaultValue = "asc", required = false) String order,
@@ -52,6 +53,7 @@ public class MessageController {
         }
 
         List<Message> msgs = messages.stream()
+                .filter(m -> id == null ? true : m.getId().equals(id))
                 .sorted(msgComp)
                 .limit(limit).collect(Collectors.toList());
         model.addAttribute("msgList", msgs);
@@ -68,4 +70,21 @@ public class MessageController {
         }
         return "oneMessage";
     }
+
+    @GetMapping(path = "/showcreate")
+    public String showCreateMessage() {
+        return "createMessage";
+    }
+
+    @PostMapping(path = "/createmessage")
+    public String createMessage(Message m) {
+        m.setCreationDate(LocalDateTime.now());
+        m.setId((long) messages.size());
+        messages.add(m);
+        //return "home";
+        //return "redirect:/messages?orderby=createDate&order=desc";
+        //return "redirect:/messages?id=" + m.getId();
+        return "redirect:/message/" + m.getId();
+    }
+
 }

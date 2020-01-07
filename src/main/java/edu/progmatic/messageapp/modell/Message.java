@@ -1,5 +1,7 @@
 package edu.progmatic.messageapp.modell;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 
 public class Message {
@@ -9,6 +11,8 @@ public class Message {
     private Long id;
     private String author;
     private String text;
+
+    @DateTimeFormat(pattern = "yyyy/MMMM/dd HH:mm")
     private LocalDateTime creationDate;
 
     public Message() {

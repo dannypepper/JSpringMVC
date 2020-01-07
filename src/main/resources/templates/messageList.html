@@ -15,6 +15,9 @@
         <li class="nav-item">
             <a class="nav-link" href="/messages">Messages</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/showcreate">New message</a>
+        </li>
     </ul>
 </nav>
 
@@ -32,7 +35,7 @@
         <tr data-th-each="msg: ${msgList}">
             <td data-th-text="${msg.author}"></td>
             <td data-th-text="${msg.text}"></td>
-            <td data-th-text="${msg.creationDate}"></td>
+            <td data-th-text="${{msg.creationDate}}"></td>
             <td><a data-th-href="@{/message/{id}(id=${msg.id})}">Részletek</a></td>
         </tr>
     </table>
