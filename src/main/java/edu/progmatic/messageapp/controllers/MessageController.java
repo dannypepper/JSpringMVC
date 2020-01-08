@@ -6,8 +6,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -85,12 +88,18 @@ public class MessageController {
     }
 
     @GetMapping(path = "/showcreate")
-    public String showCreateMessage() {
+    public String showCreateMessage(Model model) {
+        Message m = new Message();
+        model.addAttribute("message", m);
         return "createMessage";
     }
 
     @PostMapping(path = "/createmessage")
-    public String createMessage(Message m) {
+    public String createMessage(@Valid @ModelAttribute("message") Message m, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "createMessage";
+        }
+
         m.setCreationDate(LocalDateTime.now());
         m.setId((long) messages.size());
         messages.add(m);
