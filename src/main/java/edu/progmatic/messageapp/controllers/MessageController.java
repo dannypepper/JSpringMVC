@@ -1,10 +1,14 @@
 package edu.progmatic.messageapp.controllers;
 
 import edu.progmatic.messageapp.modell.Message;
+import edu.progmatic.messageapp.utils.DateConstants;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,17 +23,21 @@ public class MessageController {
     private static List<Message> messages = new ArrayList<>();
 
     static{
-        messages.add(new Message("Aladár", "Mz/x jelkezz, jelkezz", LocalDateTime.now()));
-        messages.add(new Message("Kriszta", "Bemutatom lüke Aladárt", LocalDateTime.now()));
+        messages.add(new Message("Aladár", "Mz/x jelkezz, jelkezz", LocalDateTime.now().minusDays(10)));
+        messages.add(new Message("Kriszta", "Bemutatom lüke Aladárt", LocalDateTime.now().minusDays(5)));
         messages.add(new Message("Blöki", "Vauuu", LocalDateTime.now()));
         messages.add(new Message("Maffia", "miauuu", LocalDateTime.now()));
-        messages.add(new Message("Aladár", "Kapcs/ford", LocalDateTime.now()));
-        messages.add(new Message("Aladár", "Adj pénzt!", LocalDateTime.now()));
+        messages.add(new Message("Aladár", "Kapcs/ford", LocalDateTime.now().plusDays(5)));
+        messages.add(new Message("Aladár", "Adj pénzt!", LocalDateTime.now().plusDays(10)));
     }
 
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
     public String showMessages(
             @RequestParam(name = "id", required = false) Long id,
+            @RequestParam(name = "author", required = false) String author,
+            @RequestParam(name = "text", required = false) String text,
+            @RequestParam(name = "from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime to,
             @RequestParam(name = "limit", defaultValue = "100", required = false) Integer limit,
             @RequestParam(name = "orderby", defaultValue = "", required = false) String orderBy,
             @RequestParam(name = "order", defaultValue = "asc", required = false) String order,
@@ -54,8 +62,13 @@ public class MessageController {
 
         List<Message> msgs = messages.stream()
                 .filter(m -> id == null ? true : m.getId().equals(id))
+                .filter(m -> StringUtils.isEmpty(author) ? true : m.getAuthor().contains(author))
+                .filter(m -> StringUtils.isEmpty(text) ? true : m.getText().contains(text))
+                .filter(m -> from == null ? true : m.getCreationDate().isAfter(from))
+                .filter(m -> to == null ? true : m.getCreationDate().isBefore(to))
                 .sorted(msgComp)
                 .limit(limit).collect(Collectors.toList());
+
         model.addAttribute("msgList", msgs);
         return "messageList";
     }

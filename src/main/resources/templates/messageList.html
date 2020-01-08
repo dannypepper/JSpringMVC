@@ -23,6 +23,78 @@
 
 <div class="container">
     <h1>Üzenet lista</h1>
+
+    <div class="col-10 offset-1 mb-5">
+
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Keresés</button>
+            </div>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" >
+                <div class="card-body">
+                    <form data-th-action="@{/messages}" method="get">
+
+                        <div class="form-group row">
+                            <label for="searchAuthor" class="col-sm-4 col-form-label col-form-label-sm">Üzenet írója:</label>
+                            <div class="col-sm-8">
+                                <input type="text"  name="author" class="form-control form-control-sm" id="searchAuthor" placeholder="Szerző">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="searchText" class="col-sm-4 col-form-label col-form-label-sm">Üzenet szövege:</label>
+                            <div class="col-sm-8">
+                                <input type="text"  name="text" class="form-control form-control-sm" id="searchText" placeholder="Szöveg">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="searchStartDate" class="col-sm-4 col-form-label col-form-label-sm">Üzenet keletkezése:</label>
+                            <div class="col-sm-4">
+                                <input type="datetime-local"  name="from" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="datetime-local"  name="to" class="form-control form-control-sm" id="searchStartDate">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sortBy" class="col-sm-4 col-form-label col-form-label-sm">Rendezés:</label>
+                            <div class="col-sm-4">
+                                <select name="orderby"  class="form-control form-control-sm" id="sortBy">
+                                    <option value="author">Szerző</option>
+                                    <option value="text">Szöveg</option>
+                                    <option value="date">Dátum</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="order" id="inlineRadio1" value="asc" checked>
+                                    <label class="form-check-label col-form-label-sm" for="inlineRadio1">Növekvő</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="order" id="inlineRadio2" value="desc">
+                                    <label class="form-check-label col-form-label-sm" for="inlineRadio2">Csökkenő</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="searchStartDate" class="col-sm-4 col-form-label col-form-label-sm">Megjelenítendő üzenetek száma:</label>
+                            <div class="col-sm-8">
+                                <input type="number" name="limit" class="form-control form-control-sm"/>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Keresés</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <table class="table">
         <thead>
         <tr>
