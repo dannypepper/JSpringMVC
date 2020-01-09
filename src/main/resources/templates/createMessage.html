@@ -14,13 +14,17 @@
     <form data-th-action="@{/createmessage}" method="POST" data-th-object="${message}">
     <div class="form-group">
             <label  for="author">Küldő</label>
-            <input data-th-field="*{author}" type="text" class="form-control" placeholder="Küldő">
-        <p data-th-if="${#fields.hasErrors('author')}" data-th-errors="*{author}">Name Error</p>
+            <input data-th-field="*{author}" type="text" class="form-control" data-th-errorclass="is-invalid" placeholder="Küldő">
+        <div class="invalid-feedback" data-th-if="${#fields.hasErrors('author')}" data-th-errors="*{author}">
+            Author author
+        </div>
 
     </div>
         <div class="form-group">
             <label for="text">Üzenet szövege</label>
-            <input data-th-field="*{text}" type="text" class="form-control" placeholder="Üzenet">
+            <textarea data-th-field="*{text}"  data-th-errorclass="is-invalid" class="form-control" placeholder="Üzenet"></textarea>
+            <div class="invalid-feedback" data-th-if="${#fields.hasErrors('text')}" data-th-errors="*{text}">Name Error</div>
+
         </div>
         <button type="submit" class="btn btn-primary">Beküld</button>
     </form>

@@ -2,10 +2,7 @@ package edu.progmatic.messageapp.modell;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 public class Message {
@@ -14,8 +11,13 @@ public class Message {
 
     private Long id;
 
-    @Size(max = 500, min = 10 , message = "Not between {2} and {1} characters!")
+    @Size(max = 500, min = 3 , message = "Not between {2} and {1} characters!")
+    @NotNull
+    //@Pattern(regexp ="^[A-Z]\\w* [A-Z]\\w*", message = "Not a valid name!")
     private String author;
+
+    @NotNull
+    @NotBlank
     private String text;
 
     @DateTimeFormat(pattern = "yyyy/MMMM/dd HH:mm")
