@@ -1,8 +1,10 @@
 package edu.progmatic.messageapp.controllers;
 
 import edu.progmatic.messageapp.modell.Message;
-import edu.progmatic.messageapp.utils.DateConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -10,22 +12,26 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
 public class MessageController {
 
-    private static List<Message> messages = new ArrayList<>();
+    private InMemoryUserDetailsManager userService;
 
-    static{
+    @Autowired
+    public MessageController(UserDetailsService userService) {
+        this.userService = (InMemoryUserDetailsManager) userService;
+    }
+
+    private List<Message> messages = new ArrayList<>();
+
+    {
         messages.add(new Message("Aladár", "Mz/x jelkezz, jelkezz", LocalDateTime.now().minusDays(10)));
         messages.add(new Message("Kriszta", "Bemutatom lüke Aladárt", LocalDateTime.now().minusDays(5)));
         messages.add(new Message("Blöki", "Vauuu", LocalDateTime.now()));
