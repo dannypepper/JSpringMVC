@@ -1,6 +1,7 @@
 package edu.progmatic.messageapp.controllers;
 
 import edu.progmatic.messageapp.modell.Message;
+import edu.progmatic.messageapp.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,10 +24,12 @@ import java.util.stream.Collectors;
 public class MessageController {
 
     private InMemoryUserDetailsManager userService;
+    private MessageService messageService;
 
     @Autowired
-    public MessageController(UserDetailsService userService) {
+    public MessageController(UserDetailsService userService, MessageService messageService) {
         this.userService = (InMemoryUserDetailsManager) userService;
+        this.messageService = messageService;
     }
 
     private List<Message> messages = new ArrayList<>();
@@ -38,6 +41,7 @@ public class MessageController {
         messages.add(new Message("Maffia", "miauuu", LocalDateTime.now()));
         messages.add(new Message("Aladár", "Kapcs/ford", LocalDateTime.now().plusDays(5)));
         messages.add(new Message("Aladár", "Adj pénzt!", LocalDateTime.now().plusDays(10)));
+
     }
 
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
@@ -50,35 +54,10 @@ public class MessageController {
             @RequestParam(name = "limit", defaultValue = "100", required = false) Integer limit,
             @RequestParam(name = "orderby", defaultValue = "", required = false) String orderBy,
             @RequestParam(name = "order", defaultValue = "asc", required = false) String order,
-            Model model){
-        Comparator<Message> msgComp = Comparator.comparing((Message::getCreationDate));
-        switch (orderBy){
-            case "text":
-                msgComp = Comparator.comparing((Message::getText));
-                break;
-            case "id":
-                msgComp = Comparator.comparing((Message::getId));
-                break;
-            case "author":
-                msgComp = Comparator.comparing((Message::getAuthor));
-                break;
-            default:
-                break;
-        }
-        if(order.equals("desc")){
-            msgComp = msgComp.reversed();
-        }
-
-        List<Message> msgs = messages.stream()
-                .filter(m -> id == null ? true : m.getId().equals(id))
-                .filter(m -> StringUtils.isEmpty(author) ? true : m.getAuthor().contains(author))
-                .filter(m -> StringUtils.isEmpty(text) ? true : m.getText().contains(text))
-                .filter(m -> from == null ? true : m.getCreationDate().isAfter(from))
-                .filter(m -> to == null ? true : m.getCreationDate().isBefore(to))
-                .sorted(msgComp)
-                .limit(limit).collect(Collectors.toList());
-
-        model.addAttribute("msgList", msgs);
+            Model model)
+    {
+        List<Message> messages1 = messageService.filterMessage(id, author, text, from, to, limit, orderBy, order);
+        model.addAttribute("msgList", messages1);
         return "messageList";
     }
 
@@ -86,10 +65,13 @@ public class MessageController {
     public String showOneMessage(
             @PathVariable("id") Long msgId,
             Model model){
-        Optional<Message> message = messages.stream().filter(m -> m.getId().equals(msgId)).findFirst();
+
+        Message message = messageService.getMessage(msgId);
+        model.addAttribute("message", message);
+        /*Optional<Message> message = messages.stream().filter(m -> m.getId().equals(msgId)).findFirst();
         if(message.isPresent()){
             model.addAttribute("message", message.get());
-        }
+        }*/
         return "oneMessage";
     }
 
@@ -105,14 +87,12 @@ public class MessageController {
         if (bindingResult.hasErrors()) {
             return "createMessage";
         }
+        messageService.createMessage(m);
+        return "redirect:/message/" + m.getId();
 
-        m.setCreationDate(LocalDateTime.now());
-        m.setId((long) messages.size());
-        messages.add(m);
         //return "home";
         //return "redirect:/messages?orderby=createDate&order=desc";
         //return "redirect:/messages?id=" + m.getId();
-        return "redirect:/message/" + m.getId();
     }
 
 }
